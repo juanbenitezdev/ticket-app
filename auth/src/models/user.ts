@@ -18,16 +18,29 @@ interface UserDocument extends mongoose.Document {
   password: string;
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    // Transform the JSON representation of the object
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  }
+);
 
 // Pre Save Hook
 userSchema.pre('save', async function (done) {
@@ -39,6 +52,7 @@ userSchema.pre('save', async function (done) {
   done();
 });
 
+// Static Methods
 userSchema.statics.build = (atrrs: UserAttrs) => {
   return new User(atrrs);
 };
