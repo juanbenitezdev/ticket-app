@@ -2,13 +2,13 @@ import request from "supertest";
 import { app } from "../../app";
 import moongose from "mongoose";
 
-it("retuns a 404 if the ticket is not found", async () => {
+it("returns a 404 if the ticket is not found", async () => {
   const id = new moongose.Types.ObjectId().toHexString();
 
   await request(app).get(`/api/tickets/${id}`).send().expect(404);
 });
 
-it("retuns the ticket if the ticket is found", async () => {
+it("returns the ticket if the ticket is found", async () => {
   const title = "Concert";
   const price = 20;
 
