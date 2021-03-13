@@ -2,7 +2,7 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-import { errorHandler, NotFoundError } from "@juanckets/common";
+import { errorHandler, NotFoundError, currentUser } from "@juanckets/common";
 import { createTicketRouter } from "./routes/new";
 
 const app = express();
@@ -14,6 +14,8 @@ app.use(
     secure: false,
   })
 );
+
+app.use(currentUser);
 
 app.use(createTicketRouter);
 
