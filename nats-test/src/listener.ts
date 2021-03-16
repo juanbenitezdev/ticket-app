@@ -1,15 +1,29 @@
 import nats, { Message } from "node-nats-streaming";
+import { randomBytes } from "crypto";
 
 console.clear();
 
-const stan = nats.connect("ticketing", "123", {
+// Client id (2nd arg) must be unique
+const stan = nats.connect("ticketing", randomBytes(4).toString("hex"), {
   url: "http://localhost:4222",
 });
 
 stan.on("connect", () => {
   console.log("Listener connected to NATS");
 
-  const subscription = stan.subscribe("ticket:created");
+  stan.on("close", () => {
+    console.log("NATS connection closed!");
+    process.exit();
+  });
+
+  const options = stan.subscriptionOptions().setManualAckMode(true);
+
+  // 2nd arg is queue group
+  const subscription = stan.subscribe(
+    "ticket:created",
+    "orders-service-queue-group",
+    options
+  );
 
   subscription.on("message", (msg: Message) => {
     const data = msg.getData();
@@ -17,5 +31,10 @@ stan.on("connect", () => {
     if (typeof data === "string") {
       console.log(`Received event #${msg.getSequence()}, with data: ${data}`);
     }
+
+    msg.ack(); // Acknowledging the message (Only works if setManualAckMode is true)
   });
 });
+
+process.on("SIGINT", () => stan.close());
+process.on("SIGTERM", () => stan.close());
