@@ -17,7 +17,8 @@ stan.on("connect", () => {
     process.exit();
   });
 
-  new TicketCreatedListener(stan).listen();
+  const listener = new TicketCreatedListener(stan);
+  listener.listen();
 
   /* const options = stan
     .subscriptionOptions()
