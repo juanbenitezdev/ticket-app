@@ -12,6 +12,8 @@ declare global {
   }
 }
 
+jest.mock("../nats-wrapper");
+
 let mongo: any;
 beforeAll(async () => {
   // Runs before all test
@@ -29,6 +31,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   // Runs before each test
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
 
   for (let collection of collections) {
