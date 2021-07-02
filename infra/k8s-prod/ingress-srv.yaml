@@ -7,6 +7,10 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     cert-manager.io/clusterissuer: "letsencrypt-staging"
 spec:
+  tls:
+    - hosts:
+      - ticketing.juanbenitez.dev
+    secretName: ingress-srv-tls
   rules:
     - host: ticketing.juanbenitez.dev
       http:
