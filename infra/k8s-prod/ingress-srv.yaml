@@ -10,7 +10,7 @@ spec:
   tls:
     - hosts:
       - ticketing.juanbenitez.dev
-    secretName: ingress-srv-tls
+      secretName: ingress-srv-tls
   rules:
     - host: ticketing.juanbenitez.dev
       http:
